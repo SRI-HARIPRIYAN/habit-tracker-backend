@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "habit_history")
@@ -19,13 +19,16 @@ public class HabitHistory {
     @Column(name = "habit_history_id")
     private Long habitHistoryId;
 
-    private LocalDateTime completedAt = LocalDateTime.now();
+    private LocalDate createdAt = LocalDate.now();
+
+    public HabitHistory(Habit habit) {
+        this.habit = habit;
+    }
 
     @Enumerated(EnumType.STRING)
-    private HabitStatus status;
+    private HabitStatus status = HabitStatus.PENDING;
 
     @ManyToOne
     @JoinColumn(name = "habit_id", referencedColumnName = "habit_id", nullable = false)
     private Habit habit;
-
 }

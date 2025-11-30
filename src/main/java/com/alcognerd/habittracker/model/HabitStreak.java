@@ -2,6 +2,7 @@ package com.alcognerd.habittracker.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "habit_streaks")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class HabitStreak {
@@ -17,6 +19,13 @@ public class HabitStreak {
     @Id
     @Column(name = "habit_id")
     private Long habitId;   // same as Habit.id
+
+    public HabitStreak(Habit habit, Integer currentStreak, Integer longestStreak, LocalDate lastCompletedDate) {
+        this.habit = habit;
+        this.currentStreak = currentStreak;
+        this.longestStreak = longestStreak;
+        this.lastCompletedDate = lastCompletedDate;
+    }
 
     @OneToOne
     @MapsId

@@ -1,9 +1,12 @@
 package com.alcognerd.habittracker.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class HabitCreate {
@@ -19,9 +22,16 @@ public class HabitCreate {
     private String category;
 
     @NotBlank(message = "Frequency is required")
-//    @Pattern(
-//            regexp = "DAILY|WEEKLY|MONTHLY",
-//            message = "Frequency must be one of: DAILY, WEEKLY, MONTHLY"
-//    )
+    @Pattern(
+            regexp = "DAILY|WEEKLY",
+            message = "Frequency must be one of: DAILY, WEEKLY"
+    )
     private String frequency;
+
+    @NotEmpty(message = "At least one day must be selected")
+    private List<@Pattern(
+                regexp = "MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY",
+                message = "Day must be a valid day of week in uppercase (MONDAY..SUNDAY)"
+        ) String> days;
+
 }
