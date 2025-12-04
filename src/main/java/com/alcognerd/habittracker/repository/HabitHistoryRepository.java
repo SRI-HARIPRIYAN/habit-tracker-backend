@@ -19,35 +19,34 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory,Long>
       AND h.createdAt = CURRENT_DATE
 """)
     Optional<HabitHistory> findTodayHistoryByHabitId(@Param("habitId") Long habitId);
+    @Query(
+            value = """
+        SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day,
+               COUNT(*) AS count
+        FROM habit_history
+        WHERE status = 'COMPLETED'
+          AND created_at BETWEEN :from AND :to
+        GROUP BY day
+        ORDER BY day
+        """,
+            nativeQuery = true
+    )
+    List<Object[]> getCompletedInRange(@Param("from") LocalDate from, @Param("to") LocalDate to);
+
 
     @Query(
             value = """
-            SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS day,
-                   COUNT(*) AS count
-            FROM habit_history
-            WHERE status = 'COMPLETED'
-              AND created_at BETWEEN :from AND :to
-            GROUP BY day
-            ORDER BY day
-            """,
+        SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day,
+               COUNT(*) AS count
+        FROM habit_history
+        WHERE status = 'COMPLETED'
+          AND EXTRACT(YEAR FROM created_at) = :year
+        GROUP BY day
+        ORDER BY day
+        """,
             nativeQuery = true
     )
-    List<Object[]> getCompletedInRange(LocalDate from, LocalDate to);
-
-
-    @Query(
-            value = """
-            SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS day,
-                   COUNT(*) AS count
-            FROM habit_history
-            WHERE status = 'COMPLETED'
-              AND YEAR(created_at) = :year
-            GROUP BY day
-            ORDER BY day
-            """,
-            nativeQuery = true
-    )
-    List<Object[]> getCompletedByYear(int year);
+    List<Object[]> getCompletedByYear(@Param("year") int year);
 
     // Find today's history for a habit
     Optional<HabitHistory> findByHabit_HabitIdAndCreatedAt(Long habitId, LocalDate date);
